@@ -1,7 +1,8 @@
 from PyQt4.QtCore import Qt, pyqtSignal
 from PyQt4.QtGui import QApplication, QMainWindow, QStandardItemModel, QStandardItem, QTreeView, QDockWidget
 from dataserver import resolve_path
-from pyqt_utils.plot_widgets import CloseableDock, CrosshairPlotWidget, CrossSectionImageView
+from pyqt_utils.plot_widgets import CloseableDock, CrosshairPlotWidget, CrossSectionImageView, MPLPlotWidget, \
+    BackendSwitchablePlot, BackendSwitchableDock, BackendSwitchableImageView
 from pyqtgraph.dockarea import DockArea
 
 
@@ -85,12 +86,11 @@ class MainWindow(QMainWindow):
     def plot_item(self, i):
         data = i.get_proxy()[:]
         if len(data.shape) == 1:
-            p = CrosshairPlotWidget()
-            p.plot(data)
+            p = BackendSwitchablePlot()
         else:
-            p = CrossSectionImageView()
-            p.set_data(data)
-        d = CloseableDock(i.name, widget=p)
+            p = BackendSwitchableImageView()
+        p.set_data(data)
+        d = BackendSwitchableDock(i.name, widget=p)
         self.plot_dock_widget.addDock(d)
 
 
